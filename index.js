@@ -27,7 +27,7 @@ app.post('/createRoom', function (req, res) {
 
     rooms.push({
         "id": rooms.length + 1,
-        "name": "Room" + rooms.length + 1,
+        "name": ("Room" + parseInt(+rooms.length + 1)),
         "noOfSeats": noOfSeats,
         "amenities": amenities,
         "pricePerHour": pricePerHour,
@@ -45,7 +45,7 @@ app.post('/createRoom', function (req, res) {
 })
 
 // Endpoint to book a room
-//Type = POST
+// Type = POST
 app.post('/bookRoom', function (req, res) {
 
     let customerName = req.body.customerName;
@@ -54,27 +54,27 @@ app.post('/bookRoom', function (req, res) {
     let endTime = req.body.endTime;
     let roomId = req.body.roomId;
 
-    customers.push({
-        "id": customers.length + 1,
-        "name": customerName,
-        "bookingRoomId": roomId,
-        "bookingDate": date,
-        "bookingTime": {
-            "startTime": startTime,
-            "endTime": endTime
-        }
-    })
-
-    if (rooms.find(el => el.id == roomId).bookedStatus == true && (rooms.find(el => el.id == roomId).bookedDate == date)) {
+    // check date and time of booking for previous bookings
+    if (rooms.find(el => el.id == roomId).bookedStatus == true && (rooms.find(el => el.id == roomId).bookedDate == date) && (rooms.find(el => el.id == roomId).bookedTime.startTime < endTime && startTime < rooms.find(el => el.id == roomId).bookedTime.endTime)) {
         console.log("Room is already booked");
         res.send("Room is already booked");
     } else {
+        customers.push({
+            "id": customers.length + 1,
+            "name": customerName,
+            "bookingRoomId": roomId,
+            "bookingDate": date,
+            "bookingTime": {
+                "startTime": startTime,
+                "endTime": endTime
+            }
+        })
 
         rooms.find(el => el.id == roomId).bookedStatus = true;
         rooms.find(el => el.id == roomId).bookedCustomerName = customerName;
         rooms.find(el => el.id == roomId).bookedDate = date;
         rooms.find(el => el.id == roomId).bookedTime.startTime = startTime;
-        rooms.find(el => el.id == roomId).bookedTime.startTime = roomId;
+        rooms.find(el => el.id == roomId).bookedTime.endTime = endTime;
         console.log("Room has been successfully booked");
         res.send("Booked room successfully");
     }
@@ -100,6 +100,7 @@ app.get("/listAllCustomers", function (req, res) {
 
 
 // start the server with specified port
+// handle dynamic port binding by heroku using process.env.PORT
 var server = app.listen(process.env.PORT || 8081, function () {
     var host = server.address().address
     var port = server.address().port
