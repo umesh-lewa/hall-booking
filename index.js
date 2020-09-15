@@ -32,13 +32,15 @@ app.post('/createRoom', function (req, res) {
         "amenities": amenities,
         "pricePerHour": pricePerHour,
         "bookedStatus": false,
-        "bookedCustomerName":"",
-        "bookedDate":"",
+        "bookedCustomerName": "",
+        "bookedDate": "",
         "bookedTime": {
             "startTime": "",
             "endTime": ""
         }
     });
+
+    res.end("Successfullly created room");
 
 })
 
@@ -47,13 +49,13 @@ app.post('/createRoom', function (req, res) {
 app.post('/bookRoom', function (req, res) {
 
     let customerName = req.body.customerName;
-    let date = req.body.sate;
+    let date = req.body.date;
     let startTime = req.body.startTime;
     let endTime = req.body.endTime;
     let roomId = req.body.roomId;
 
     customers.push({
-        "id": customerName.length + 1,
+        "id": customers.length + 1,
         "name": customerName,
         "bookingRoomId": roomId,
         "bookingDate": date,
@@ -63,25 +65,27 @@ app.post('/bookRoom', function (req, res) {
         }
     })
 
-    if (rooms.find(el => el.id == roomId).bookedStatus == true && ()) {
+    if (rooms.find(el => el.id == roomId).bookedStatus == true && (rooms.find(el => el.id == roomId).bookedDate == date)) {
         console.log("Room is already booked");
+        res.send("Room is already booked");
     } else {
-        
+
         rooms.find(el => el.id == roomId).bookedStatus = true;
         rooms.find(el => el.id == roomId).bookedCustomerName = customerName;
         rooms.find(el => el.id == roomId).bookedDate = date;
         rooms.find(el => el.id == roomId).bookedTime.startTime = startTime;
         rooms.find(el => el.id == roomId).bookedTime.startTime = roomId;
-        console.log("Room has been successfully booked")
+        console.log("Room has been successfully booked");
+        res.send("Booked room successfully");
     }
 })
 
 // Endpoint to get all rooms information
 // Type = GET
-app.post("/listAllRooms", function (req, res) {
+app.get("/listAllRooms", function (req, res) {
 
-    res.end({
-        "rooms" : rooms
+    res.send({
+        "rooms": rooms
     });
 })
 
@@ -89,8 +93,8 @@ app.post("/listAllRooms", function (req, res) {
 // Type = GET
 app.get("/listAllCustomers", function (req, res) {
 
-    res.end({
-        "customers" : customers
+    res.send({
+        "customers": customers
     })
 })
 
