@@ -75,7 +75,7 @@ app.post('/bookRoom', function (req, res) {
         rooms.find(el => el.id == roomId).bookedDate = date;
         rooms.find(el => el.id == roomId).bookedTime.startTime = startTime;
         rooms.find(el => el.id == roomId).bookedTime.endTime = endTime;
-        console.log("Room has been successfully booked");
+        console.log("Booked room successfully");
         res.send("Booked room successfully");
     }
 })
