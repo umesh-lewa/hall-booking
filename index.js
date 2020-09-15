@@ -18,7 +18,7 @@ let rooms = [];
 let customers = [];
 
 // Endpoint to create a Room
-// Type = GET
+// Type = POST
 app.post('/createRoom', function (req, res) {
 
     let noOfSeats = req.body.seats;
