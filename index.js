@@ -32,12 +32,7 @@ app.post('/createRoom', function (req, res) {
         "amenities": amenities,
         "pricePerHour": pricePerHour,
         "bookedStatus": false,
-        "bookedCustomerName": "",
-        "bookedDate": "",
-        "bookedTime": {
-            "startTime": "",
-            "endTime": ""
-        }
+        "bookings": []
     });
 
     res.end("Successfullly created room");
@@ -54,8 +49,17 @@ app.post('/bookRoom', function (req, res) {
     let endTime = req.body.endTime;
     let roomId = req.body.roomId;
 
+    let  isOverlap = false;
+
+    rooms.find(el => el.id == roomId).bookings.forEach(eachBooking => {
+        if ( (eachBooking.bookedDate == date) && (eachBooking.bookedTime.startTime < endTime && startTime < eachBooking.bookedTime.endTime)) {
+            isOverlap = true;
+        }
+    });
+
     // check date and time of booking for previous bookings
-    if (rooms.find(el => el.id == roomId).bookedStatus == true && (rooms.find(el => el.id == roomId).bookedDate == date) && (rooms.find(el => el.id == roomId).bookedTime.startTime < endTime && startTime < rooms.find(el => el.id == roomId).bookedTime.endTime)) {
+    //if (rooms.find(el => el.id == roomId).bookedStatus == true && (rooms.find(el => el.id == roomId).bookedDate == date) && (rooms.find(el => el.id == roomId).bookedTime.startTime < endTime && startTime < rooms.find(el => el.id == roomId).bookedTime.endTime)) {
+    if (isOverlap) {
         console.log("Room is already booked");
         res.send("Room is already booked");
     } else {
@@ -71,10 +75,21 @@ app.post('/bookRoom', function (req, res) {
         })
 
         rooms.find(el => el.id == roomId).bookedStatus = true;
+        rooms.find(el => el.id == roomId).bookings.push({
+            "bookedCustomerName": customerName,
+            "bookedDate": date,
+            "bookedTime": {
+                "startTime": startTime,
+                "endTime": endTime
+            }
+        });
+        /*
+        rooms.find(el => el.id == roomId).bookedStatus = true;
         rooms.find(el => el.id == roomId).bookedCustomerName = customerName;
         rooms.find(el => el.id == roomId).bookedDate = date;
         rooms.find(el => el.id == roomId).bookedTime.startTime = startTime;
         rooms.find(el => el.id == roomId).bookedTime.endTime = endTime;
+        */
         console.log("Booked room successfully");
         res.send("Booked room successfully");
     }
