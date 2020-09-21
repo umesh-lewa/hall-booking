@@ -1,8 +1,13 @@
 # hall-booking
 
+----------------------------------------------------------------
+
 Deployed Heroku URL :
 
 https://hall-booking-umesh.herokuapp.com/
+
+
+----------------------------------------------------------------
 
 Endpoint 1 : Create a new Room
 
@@ -18,11 +23,16 @@ Sample Request Body :
     "price": 15000
 }
 
+----------------------------------------------------------------
+
 Endpoint 2 : Get all room details
 
 Type =  GET
 
 https://hall-booking-umesh.herokuapp.com/listAllRooms
+
+
+----------------------------------------------------------------
 
 Endpoint 3 : Book a Room
 
@@ -40,8 +50,12 @@ Sample Request Body :
     "roomId":"1"
 }
 
+----------------------------------------------------------------
+
 Endpoint 4 : Get all customer details
 
 Type = GET
 
 https://hall-booking-umesh.herokuapp.com/listAllCustomers
+
+----------------------------------------------------------------
